@@ -1,10 +1,13 @@
 from __future__ import annotations
 
 import pandas as pd
+import pytest
 
 from ofi_memory_zones.config import OFIMemoryZoneConfig
 from ofi_memory_zones.schema import ColumnMapping
 from ofi_memory_zones.study import run_ofi_zone_study
+
+pytestmark = pytest.mark.integration
 
 
 def test_data_diagnostics_reports_proxy_and_low_retest_warnings(tmp_path) -> None:

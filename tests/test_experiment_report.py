@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 
 import pandas as pd
+import pytest
 
 from ofi_memory_zones.config import OFIMemoryZoneConfig
 from ofi_memory_zones.reporting import summarize_ofi_experiment
@@ -10,6 +11,8 @@ from ofi_memory_zones.schema import ColumnMapping
 from ofi_memory_zones.study import run_ofi_zone_study
 from ofi_memory_zones.sweep import run_ofi_zone_sweep
 from ofi_memory_zones.synthetic import generate_synthetic_ofi_data
+
+pytestmark = pytest.mark.integration
 
 
 def test_study_output_generates_experiment_report(tmp_path) -> None:

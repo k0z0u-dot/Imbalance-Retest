@@ -486,6 +486,23 @@ constraints, adverse selection, or live risk controls. OFI must first beat
 random, matched random, swing SR, volume profile, and OOS checks before any
 separate execution research would be justified.
 
+## Test Commands
+
+Full validation:
+
+```bash
+python -m pytest
+```
+
+Quick handoff check:
+
+```bash
+python -m pytest -m "not integration"
+```
+
+Tests marked `integration` run full study, sweep, or report pipelines and are
+intentionally slower.
+
 ## Known Limitations
 
 - v0 treats each valid event as its own zone; merge distance is configured for

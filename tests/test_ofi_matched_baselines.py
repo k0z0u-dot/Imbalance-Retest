@@ -1,11 +1,14 @@
 from __future__ import annotations
 
 import pandas as pd
+import pytest
 
 from ofi_memory_zones.config import OFIMemoryZoneConfig
 from ofi_memory_zones.schema import ColumnMapping
 from ofi_memory_zones.synthetic import generate_synthetic_ofi_data
 from ofi_memory_zones.study import run_ofi_zone_study
+
+pytestmark = pytest.mark.integration
 
 
 def test_matched_random_baselines_and_trials_are_reported(tmp_path) -> None:

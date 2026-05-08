@@ -2,6 +2,83 @@
 
 Last updated: 2026-05-09
 
+## Latest Update
+
+今回の目的:
+
+- `AI_HANDOFF.md` を起点に、最も小さく安全な改善としてテスト実行時間の懸念に対応した。
+- 研究ロジックやCLI仕様は変更せず、重い統合テストに `integration` マーカーを付け、短時間のhandoff確認コマンドを追加した。
+
+変更ファイル:
+
+- `pyproject.toml`
+- `README.md`
+- `docs/OFI_MEMORY_ZONE.md`
+- `tests/test_data_diagnostics.py`
+- `tests/test_experiment_report.py`
+- `tests/test_ofi_matched_baselines.py`
+- `tests/test_ofi_study.py`
+- `tests/test_ofi_sweep.py`
+- `tests/test_ofi_synthetic_smoke.py`
+- `tests/test_oos_split.py`
+- `tests/test_synthetic_cycles.py`
+- `AI_HANDOFF.md`
+
+実行コマンド:
+
+- `Get-Content -Raw AI_HANDOFF.md`
+- `git status --short`
+- `Get-ChildItem -Force | Select-Object Name,Mode,Length`
+- `Get-ChildItem -Recurse -File src\\ofi_memory_zones,tests,docs | Select-Object FullName`
+- `Get-Content -Raw README.md`
+- `Get-Content -Raw docs\\OFI_MEMORY_ZONE.md`
+- `Get-Content -Raw src\\ofi_memory_zones\\*.py` の主要ファイル確認
+- `Get-ChildItem tests -File | Select-Object Name`
+- `python -m pytest -m "not integration"`
+- `python -m pytest`
+- `git status --short`
+
+テスト結果:
+
+```text
+python -m pytest -m "not integration"
+24 passed, 12 deselected in 12.40s
+
+python -m pytest
+36 passed in 112.68s (0:01:52)
+```
+
+最新の `git status --short`:
+
+```text
+ M AI_HANDOFF.md
+ M README.md
+ M docs/OFI_MEMORY_ZONE.md
+ M pyproject.toml
+ M tests/test_data_diagnostics.py
+ M tests/test_experiment_report.py
+ M tests/test_ofi_matched_baselines.py
+ M tests/test_ofi_study.py
+ M tests/test_ofi_sweep.py
+ M tests/test_ofi_synthetic_smoke.py
+ M tests/test_oos_split.py
+ M tests/test_synthetic_cycles.py
+```
+
+未解決の懸念:
+
+- フルpytestは改善前より少し短くなったが、まだ約2分かかる。
+- `integration` マーカーは粗めの分類で、将来的には `slow`, `cli`, `report`, `sweep` などに分けてもよい。
+- 研究ロジック本体の品質は今回変更していない。
+- `pyproject.toml` のプロジェクトversionはまだ `0.1.0`。
+
+次にChatGPTへ相談すべき点:
+
+1. `integration` 以外のテスト分類を増やすべきか。
+2. CIを想定するなら、quick/fullの2段階テストコマンドをどう運用するか。
+3. `pyproject.toml` のversionを実装状態に合わせて更新するか。
+4. 実データ検証前に、入力CSVスキーマ診断をさらに厳密化するか。
+
 ## Current Goal
 
 This repository is an observational research toolkit for OFI Memory Zone /
@@ -115,6 +192,8 @@ Commands and outcomes:
 - `Get-ChildItem tests -File | Select-Object Name`
   - Confirmed test suite files.
 - `python -m pytest`
+- `python -m pytest -m "not integration"`
+- Slow full-pipeline tests are marked with `integration` for quicker handoff checks.
   - Result: all tests passed.
 
 ## Test Result
@@ -133,12 +212,12 @@ python -m pytest
 
 ## Current Error / Concern
 
-- The folder is not a Git repository, so there is no commit history or `git diff`
-  safety net.
-- Full pytest currently takes about 2 minutes 16 seconds. This is acceptable for
-  validation but may slow frequent handoffs.
-- Some tests run full study pipelines with synthetic data and baseline trials,
-  which contributes to runtime.
+- The repository is now Git-managed.
+- Full pytest currently takes about 1 minute 52 seconds on the latest run.
+- Quick handoff check is available with `python -m pytest -m "not integration"`;
+  latest result was 24 passed and 12 deselected in 12.40s.
+- Some integration tests still run full study pipelines with synthetic data and
+  baseline trials, which contributes to runtime.
 - Quality gate thresholds are intentionally simple and conservative. They are
   useful for research triage, not production readiness.
 - Swing SR and volume profile baselines are simplified controls, not full

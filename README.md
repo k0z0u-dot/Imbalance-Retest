@@ -99,6 +99,21 @@ The report command writes `experiment_report.md` and
 `experiment_report.json`. Sweep mode also writes
 `sweep_robustness_summary.csv` and `sweep_robustness_report.md`.
 
+## Tests
+
+Run the full test suite:
+
+```bash
+python -m pytest
+```
+
+For a quicker handoff check that skips full study/sweep/report integration
+pipelines:
+
+```bash
+python -m pytest -m "not integration"
+```
+
 See [docs/OFI_MEMORY_ZONE.md](docs/OFI_MEMORY_ZONE.md) for the full hypothesis,
 input requirements, leakage controls, baseline comparison, sweep runner, output
 schema, and known limitations.

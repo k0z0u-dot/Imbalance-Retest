@@ -3,10 +3,13 @@ from __future__ import annotations
 import json
 
 import pandas as pd
+import pytest
 
 from ofi_memory_zones.schema import ColumnMapping
 from ofi_memory_zones.sweep import run_ofi_zone_sweep
 from ofi_memory_zones.synthetic import generate_synthetic_ofi_data
+
+pytestmark = pytest.mark.integration
 
 
 def test_parameter_sweep_writes_all_and_best_results(tmp_path) -> None:

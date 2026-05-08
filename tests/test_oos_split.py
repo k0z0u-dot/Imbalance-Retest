@@ -3,11 +3,14 @@ from __future__ import annotations
 import json
 
 import pandas as pd
+import pytest
 
 from ofi_memory_zones.config import OFIMemoryZoneConfig
 from ofi_memory_zones.schema import ColumnMapping
 from ofi_memory_zones.synthetic import generate_synthetic_ofi_data
 from ofi_memory_zones.study import run_ofi_zone_study
+
+pytestmark = pytest.mark.integration
 
 
 def test_train_test_split_is_chronological_and_writes_outputs(tmp_path) -> None:

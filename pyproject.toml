@@ -17,6 +17,9 @@ dev = [
 pythonpath = ["src"]
 testpaths = ["tests"]
 addopts = "-q"
+markers = [
+    "integration: slower tests that run full study, sweep, or report pipelines",
+]
 
 [tool.ruff]
 line-length = 100

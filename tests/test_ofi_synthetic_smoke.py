@@ -3,11 +3,14 @@ from __future__ import annotations
 import json
 
 import pandas as pd
+import pytest
 
 from ofi_memory_zones.config import OFIMemoryZoneConfig
 from ofi_memory_zones.schema import ColumnMapping
 from ofi_memory_zones.synthetic import PATTERN_TYPES, generate_synthetic_ofi_data
 from ofi_memory_zones.study import run_ofi_zone_study
+
+pytestmark = pytest.mark.integration
 
 
 def test_synthetic_data_study_detects_intended_zone_types(tmp_path) -> None:
