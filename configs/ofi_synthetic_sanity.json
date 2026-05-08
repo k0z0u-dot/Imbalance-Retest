@@ -1,0 +1,8 @@
+﻿{
+  "target_bps": 20.0,
+  "stop_bps": 8.0,
+  "fee_bps": 0.5,
+  "slippage_bps": 0.5,
+  "retest_horizon_bars": 30,
+  "baseline_random_trials": 50
+}
