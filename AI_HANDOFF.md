@@ -80,6 +80,21 @@ Commands run:
 - `python -m scripts.check_handoff`
   - Result after updating `AI_HANDOFF.md`: quick tests passed, handoff check
     PASS.
+- Post-push verification requested by the user:
+  - `.github/workflows/ci.yml` exists.
+  - CI triggers are `push` to `main` and `pull_request`.
+  - CI uses Python `3.11`.
+  - CI runs `python -m scripts.check_handoff`.
+  - CI runs `python -m pytest`.
+  - README and AI handoff are updated.
+  - Latest commit only touched CI/docs/test workflow files; no research logic,
+    output schema, EA, or trading logic was touched.
+- `python -m pytest -m "not integration"`
+  - Post-push verification result: `35 passed, 12 deselected in 13.25s`.
+- `python -m scripts.check_handoff`
+  - Post-push verification result: quick tests passed, handoff check PASS.
+- `python -m pytest`
+  - Post-push verification result: `47 passed in 115.47s (0:01:55)`.
 
 Test results:
 
@@ -103,6 +118,16 @@ Batch result: 1 succeeded, 0 failed
 python -m scripts.check_handoff
 35 passed, 12 deselected in 14.26s
 handoff check: PASS
+
+python -m pytest -m "not integration"
+35 passed, 12 deselected in 13.25s
+
+python -m scripts.check_handoff
+35 passed, 12 deselected in 10.98s
+handoff check: PASS
+
+python -m pytest
+47 passed in 115.47s (0:01:55)
 ```
 
 Current error / concern:
