@@ -99,6 +99,24 @@ The report command writes `experiment_report.md` and
 `experiment_report.json`. Sweep mode also writes
 `sweep_robustness_summary.csv` and `sweep_robustness_report.md`.
 
+## Experiment Batch
+
+Run several reproducible study configs against one input CSV:
+
+```bash
+python -m scripts.run_ofi_experiment_batch \
+  --input data/ofi_synthetic_large.csv \
+  --output-root output/ofi_batch \
+  --config configs/ofi_loose.json \
+  --config configs/ofi_default_validation.json \
+  --config configs/ofi_strict.json
+```
+
+The batch runner writes per-config `study/` and `report/` directories plus
+`batch_summary.csv` and `batch_summary.json`. See
+[docs/OFI_EXPERIMENT_PROTOCOL.md](docs/OFI_EXPERIMENT_PROTOCOL.md) for the
+recommended validation order.
+
 ## Tests
 
 Run the full test suite:

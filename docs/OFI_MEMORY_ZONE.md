@@ -391,6 +391,10 @@ python -m scripts.summarize_ofi_experiment \
 
 `experiment_report.json` contains the same sections in machine-readable form.
 
+For a repeatable real-data workflow, reusable config files, and the batch runner
+that compares several configs against one input CSV, see
+[OFI_EXPERIMENT_PROTOCOL.md](OFI_EXPERIMENT_PROTOCOL.md).
+
 ## Quality Gate
 
 The quality gate is a research-hypothesis screen, not a trading decision. It

@@ -1,0 +1,17 @@
+{
+  "imbalance_z_threshold": 2.0,
+  "robust_z_threshold": 2.5,
+  "z_window": 100,
+  "reaction_horizon_bars": 20,
+  "min_reaction_bps": 5.0,
+  "min_reaction_atr": 0.2,
+  "zone_width_bps": 8.0,
+  "retest_horizon_bars": 20,
+  "target_bps": 8.0,
+  "stop_bps": 6.0,
+  "baseline_random_trials": 30,
+  "split_mode": "walk_forward",
+  "wf_train_bars": 1000,
+  "wf_test_bars": 300,
+  "wf_step_bars": 300
+}

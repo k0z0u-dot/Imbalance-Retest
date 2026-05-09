@@ -1,0 +1,11 @@
+{
+  "grid": {
+    "use_robust_z": [true, false],
+    "imbalance_z_threshold": [1.8, 2.0],
+    "robust_z_threshold": [2.3, 2.5],
+    "reaction_horizon_bars": [15, 20],
+    "min_reaction_bps": [4.0, 5.0],
+    "zone_width_bps": [6.0, 8.0],
+    "baseline_random_trials": [10]
+  }
+}
