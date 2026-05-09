@@ -122,6 +122,11 @@ recommended validation order.
 GitHub Actions runs the handoff check, full pytest suite, and a small batch
 runner smoke test on pushes to `main` and pull requests.
 
+## Agent Policy
+
+For Codex, ChatGPT, and future review agents, read
+[AGENT_POLICY.md](AGENT_POLICY.md) before making repository changes.
+
 ## Tests
 
 Run the full test suite:
