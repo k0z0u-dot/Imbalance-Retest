@@ -6,137 +6,123 @@ Last updated: 2026-05-09
 
 Purpose of this pass:
 
-- Implement GitHub Issue #5:
-  [Codex Task: Add agent policy for safe semi-automated development loop](https://github.com/k0z0u-dot/Imbalance-Retest/issues/5).
-- Add `AGENT_POLICY.md` so ChatGPT, Codex, and future review/automation agents
-  share the same repository constraints and workflow.
-- Keep this as a policy/documentation pass. No research logic, output schema,
-  CI automation, Codex auto-triggering, EA logic, live trading, order execution,
-  position sizing, broker/exchange integration, portfolio logic, or risk
-  management was changed.
+- Document the current ChatGPT-Codex semi-automated development loop.
+- Add `docs/AGENT_WORKFLOW.md` describing roles, the Issue-to-Codex-to-push-to-review loop,
+  Codex preflight/completion checklists, ChatGPT review checks, known GitHub tool
+  limitations, and safety rules linking to `AGENT_POLICY.md`.
+- Update `README.md` with a short workflow-doc link.
+- Keep this as documentation only. No research logic, output schema, CI,
+  automation, EA logic, live trading, order execution, position sizing,
+  broker/exchange integration, portfolio logic, or risk-management behavior was
+  changed.
 
 Changed files:
 
-- `AGENT_POLICY.md`
-- `tests/test_agent_policy.py`
+- `docs/AGENT_WORKFLOW.md`
 - `README.md`
 - `AI_HANDOFF.md`
 
 Implementation summary:
 
-- Added root-level `AGENT_POLICY.md`.
-- Policy sections:
-  - Repository Purpose
-  - Hard Constraints
-  - Required Workflow For Codex Tasks
-  - Required Checks
-  - Review Criteria
-  - Failure Handling
-- The policy states that the repository is an observational OFI Memory Zone /
-  Imbalance-Retest research toolkit and explicitly not an EA, live trading bot,
-  execution system, position sizing system, or broker/exchange integration
-  project.
-- The policy requires future agents to avoid changing these unless a GitHub
-  Issue explicitly asks for it:
-  - OFI feature construction semantics
-  - zone generation semantics
-  - retest classification semantics
-  - target/stop first-touch outcome logic
-  - baseline definitions
-  - output schemas
-  - quality-gate interpretation
-- Added a small test to verify `AGENT_POLICY.md` exists and contains the
-  required sections/constraints.
-- README now briefly points agents to `AGENT_POLICY.md`.
+- Added `docs/AGENT_WORKFLOW.md`.
+- Documented roles:
+  - ChatGPT
+  - Codex
+  - GitHub
+  - GitHub Actions
+- Documented the standard loop:
+  - Issue definition
+  - Codex implementation
+  - required local checks
+  - `AI_HANDOFF.md` update
+  - commit/push to `main`
+  - ChatGPT review
+- Added Codex preflight checklist.
+- Added Codex completion checklist.
+- Added ChatGPT review checklist.
+- Documented known GitHub tool limitations:
+  - Issue creation generally works.
+  - Repository, file, and commit reads work.
+  - Issue comments are unreliable.
+  - Issue close or update actions may be intermittent.
+  - If close/comment fails, completion is tracked by latest commit SHA plus
+    `AI_HANDOFF.md`.
+- Added safety rules and linked to `AGENT_POLICY.md`.
+- README now links to `docs/AGENT_WORKFLOW.md` from the Agent Policy section.
 
 Commands run:
 
-- Opened GitHub Issue #5 in the browser and confirmed scope, constraints,
-  required sections, tests, and done criteria.
 - `git status --short`
   - Initial result: no output; worktree was clean.
-- `git branch --show-current`
-  - Result: `main`.
+- `Get-Content -Raw AGENT_POLICY.md`
+  - Reviewed repository policy before editing.
 - `Get-Content -Raw AI_HANDOFF.md`
   - Reviewed previous handoff state.
 - `Get-Content -Raw README.md`
-  - Reviewed existing docs structure.
-- `Get-ChildItem tests -File | Select-Object Name,Length`
-  - Reviewed test layout before adding the policy test.
-- `python -m pytest tests\test_agent_policy.py`
-  - First result: failed because one asserted phrase crossed a line break in
-    `AGENT_POLICY.md`.
-- Updated `AGENT_POLICY.md` to keep the repository-purpose phrase contiguous.
-- `python -m pytest tests\test_agent_policy.py`
-  - Result: `1 passed in 0.28s`.
+  - Reviewed existing README sections.
+- `Get-ChildItem docs -File | Select-Object Name,Length`
+  - Confirmed existing docs before adding `AGENT_WORKFLOW.md`.
 - `python -m scripts.check_handoff`
   - Result: quick tests passed, handoff check PASS.
 - `python -m pytest`
-  - Result: `48 passed in 118.26s (0:01:58)`.
+  - First run result: timed out after 304 seconds.
+- `Get-Process python -ErrorAction SilentlyContinue`
+  - Result after timeout: no Python process output; no leftover pytest process.
+- `git status --short`
+  - Confirmed only `README.md` and `docs/AGENT_WORKFLOW.md` were changed before
+    updating this handoff file.
+- `python -m pytest`
+  - Re-run with longer timeout: `48 passed in 367.10s (0:06:07)`.
 - `python -m scripts.check_handoff`
   - Result after updating `AI_HANDOFF.md`: quick tests passed, handoff check
     PASS.
 - `python -m pytest`
-  - Result after updating `AI_HANDOFF.md`: `48 passed in 107.70s (0:01:47)`.
-- `git diff --check`
-  - Result: passed; only line-ending warnings were printed.
-- `git status --short`
-  - Pre-commit result:
-
-```text
- M AI_HANDOFF.md
- M README.md
-?? AGENT_POLICY.md
-?? tests/test_agent_policy.py
-```
+  - Result after updating `AI_HANDOFF.md`: `48 passed in 431.90s (0:07:11)`.
 
 Test results:
 
 ```text
-python -m pytest tests\test_agent_policy.py
-1 passed in 0.28s
-
 python -m scripts.check_handoff
-36 passed, 12 deselected in 17.31s
+36 passed, 12 deselected in 13.01s
 handoff check: PASS
 
 python -m pytest
-48 passed in 118.26s (0:01:58)
+timed out after 304 seconds
+
+python -m pytest
+48 passed in 367.10s (0:06:07)
 
 python -m scripts.check_handoff
-36 passed, 12 deselected in 11.41s
+36 passed, 12 deselected in 59.33s
 handoff check: PASS
 
 python -m pytest
-48 passed in 107.70s (0:01:47)
+48 passed in 431.90s (0:07:11)
 ```
 
 Current error / concern:
 
-- The first policy test run failed due to a line-break-sensitive phrase check.
-  The policy document was adjusted without changing scope or meaning, and the
-  test then passed.
-- Full pytest remains around 2 minutes locally.
-- This pass intentionally does not add automation that triggers Codex or edits
-  code automatically.
-- No CI workflow changes were made.
-- No research/trading logic was changed.
+- Full pytest passed but took much longer than recent runs. The first run hit a
+  304-second timeout; subsequent runs passed in about 6-7 minutes.
+- This pass intentionally does not add tests because the requested change is
+  documentation-only and existing checks passed.
+- No CI, automation, research logic, schema, or trading behavior was changed.
 
 Decisions made:
 
-- Added a policy-file existence/content test because Issue #5 allowed a small
-  policy test if useful.
-- Kept README update to one short section.
-- Did not modify `scripts.check_handoff`, CI, research modules, output schemas,
-  or config defaults.
+- Kept README update minimal.
+- Put detailed workflow content in `docs/AGENT_WORKFLOW.md`, not README.
+- Used ASCII `ChatGPT-Codex` / `Issue-to-Codex-to-push-to-review` wording in
+  docs to keep file encoding simple.
+- Did not add GitHub automation or Codex auto-start behavior.
 
 What I want ChatGPT to do next:
 
-1. Review whether `AGENT_POLICY.md` is strict enough for future review agents.
-2. Decide whether future issues should require agents to quote or summarize the
-   policy before implementation.
-3. After push, confirm GitHub shows the latest commit and decide whether to
-   close Issue #5.
+1. Review whether `docs/AGENT_WORKFLOW.md` accurately reflects the intended
+   handoff and review process.
+2. Decide whether a future issue should add lightweight tests for workflow docs.
+3. If full pytest remains slow, decide whether to split slower integration
+   checks further.
 
 ## Current Goal
 
@@ -185,6 +171,7 @@ Implemented major features:
 - Reusable protocol configs and `docs/OFI_EXPERIMENT_PROTOCOL.md`.
 - GitHub Actions CI workflow for handoff, full tests, and batch smoke.
 - Agent development policy: `AGENT_POLICY.md`.
+- Agent workflow documentation: `docs/AGENT_WORKFLOW.md`.
 
 Key entry points:
 
@@ -205,5 +192,6 @@ Repository layout:
 - `configs/`: reusable study configs and sweep grid
 - `docs/OFI_MEMORY_ZONE.md`: detailed design and usage documentation
 - `docs/OFI_EXPERIMENT_PROTOCOL.md`: repeatable validation protocol
+- `docs/AGENT_WORKFLOW.md`: ChatGPT-Codex development loop
 - `README.md`: quick start and common CLI examples
 - `data/ofi_synthetic.csv`: sample synthetic CSV

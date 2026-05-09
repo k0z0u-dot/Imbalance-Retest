@@ -126,6 +126,8 @@ runner smoke test on pushes to `main` and pull requests.
 
 For Codex, ChatGPT, and future review agents, read
 [AGENT_POLICY.md](AGENT_POLICY.md) before making repository changes.
+The semi-automated ChatGPT-Codex loop is documented in
+[docs/AGENT_WORKFLOW.md](docs/AGENT_WORKFLOW.md).
 
 ## Tests
 
