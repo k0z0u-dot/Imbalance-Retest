@@ -117,6 +117,11 @@ The batch runner writes per-config `study/` and `report/` directories plus
 [docs/OFI_EXPERIMENT_PROTOCOL.md](docs/OFI_EXPERIMENT_PROTOCOL.md) for the
 recommended validation order.
 
+## CI
+
+GitHub Actions runs the handoff check, full pytest suite, and a small batch
+runner smoke test on pushes to `main` and pull requests.
+
 ## Tests
 
 Run the full test suite:
