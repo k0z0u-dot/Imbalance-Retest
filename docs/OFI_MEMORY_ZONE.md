@@ -500,6 +500,12 @@ Quick handoff check:
 python -m pytest -m "not integration"
 ```
 
+Handoff sanity script:
+
+```bash
+python -m scripts.check_handoff
+```
+
 Tests marked `integration` run full study, sweep, or report pipelines and are
 intentionally slower.
 

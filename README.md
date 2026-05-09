@@ -114,6 +114,13 @@ pipelines:
 python -m pytest -m "not integration"
 ```
 
+The same handoff sanity check is available as a small script that also verifies
+the required handoff files exist:
+
+```bash
+python -m scripts.check_handoff
+```
+
 See [docs/OFI_MEMORY_ZONE.md](docs/OFI_MEMORY_ZONE.md) for the full hypothesis,
 input requirements, leakage controls, baseline comparison, sweep runner, output
 schema, and known limitations.
