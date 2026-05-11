@@ -6,6 +6,57 @@ Last updated: 2026-05-11
 
 Purpose of this pass:
 
+- Add a safe real-data smoke pipeline runner that executes inspection → study → report only when input readiness allows it.
+- Add smoke-run documentation, tests, and handoff records without changing OFI research semantics or output schemas.
+
+Changed files:
+
+- `scripts/run_ofi_real_data_smoke.py`
+- `tests/test_real_data_smoke.py`
+- `README.md`
+- `docs/OFI_EXPERIMENT_PROTOCOL.md`
+- `.gitignore`
+- `AI_HANDOFF.md`
+
+Implementation summary:
+
+- Added `python -m scripts.run_ofi_real_data_smoke`.
+- The runner always writes `input_inspection/input_diagnostics.json|md`, checks `readiness_verdict`, and blocks study/report when verdict is `NOT_READY`.
+- For `READY` or `USABLE_WITH_WARNINGS`, the runner executes `run_ofi_zone_study` and `summarize_ofi_experiment`, then writes `smoke_summary.json` and `smoke_summary.md`.
+- Added smoke summary fields for readiness, flow source, warnings, execution flags, key metrics, baseline summary presence, quality gate verdict, and next review checklist.
+- Added tests for NOT_READY stop behavior and ready-like full pipeline behavior.
+- Updated README and protocol docs with real-data smoke command usage and explicit guardrail notes.
+- Extended `.gitignore` with `data/real/` and `reports/` to reduce accidental raw/output commits.
+
+Commands run:
+
+- `pytest -q`
+- `python -m pytest -m "not integration"`
+- `python -m scripts.check_handoff`
+- `python -m pytest --durations=20`
+- `python -m scripts.run_ofi_real_data_smoke --input data/ofi_synthetic.csv --output-root output/real_smoke_synthetic --config-json configs/ofi_loose.json`
+
+Known unresolved points:
+
+- Smoke runner intentionally returns non-zero (default 1) on `NOT_READY`; callers should treat this as an expected guardrail outcome, not a crash.
+
+Scope guardrail reminder:
+
+- This change is still research pipeline tooling only; it does not add strategy backtest, equity simulation, execution, or position management behavior.
+
+Codex Cloud UI PR workflow:
+
+- This change set is prepared for Codex Cloud UI PR creation/update workflow.
+- No manual `git push` was performed from shell.
+
+
+
+Last updated: 2026-05-11
+
+## Latest Update
+
+Purpose of this pass:
+
 - Finish input inspection reporting/docs for auto-detected canonical flow columns from PR #10.
 - Keep OFI feature construction, zone/retest semantics, baselines, quality gate, and existing output schemas unchanged.
 

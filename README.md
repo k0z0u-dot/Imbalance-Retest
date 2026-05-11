@@ -68,6 +68,17 @@ If your CSV uses canonical flow column names (for example `taker_buy_volume` / `
 
 This writes `input_diagnostics.json` and `input_diagnostics.md` with timestamp quality, flow-source detection, detected column mapping, coverage/null rates, warnings, and a readiness verdict (`READY`, `USABLE_WITH_WARNINGS`, `NOT_READY`).
 
+Run inspect → study → report safely in one command for real-data smoke:
+
+```bash
+python -m scripts.run_ofi_real_data_smoke \
+  --input data/real/BTC_1m.csv \
+  --output-root output/real_smoke/BTC_1m \
+  --config-json configs/ofi_loose.json
+```
+
+If readiness is `NOT_READY`, the runner stops before study/report and writes `smoke_summary.json` / `smoke_summary.md`.
+
 ## v0.3 Validation
 
 Use config JSON to enable multiple baseline trials and OOS checks:
