@@ -5,6 +5,7 @@ from pathlib import Path
 
 import pandas as pd
 
+from ofi_memory_zones.column_detection import detected_column_mapping_report, infer_column_mapping_from_columns
 from ofi_memory_zones.schema import ColumnMapping
 
 READY = "READY"
@@ -15,6 +16,7 @@ NOT_READY = "NOT_READY"
 def inspect_input_csv(input_path: str | Path, columns: ColumnMapping | None = None) -> dict[str, object]:
     cols = columns or ColumnMapping()
     raw = pd.read_csv(input_path)
+    cols = infer_column_mapping_from_columns(raw.columns, cols)
     rows = len(raw)
 
     timestamp_series = _parsed_timestamps(raw, cols.timestamp_col)
@@ -55,6 +57,7 @@ def inspect_input_csv(input_path: str | Path, columns: ColumnMapping | None = No
         "signed_volume_coverage": _coverage(raw, cols.signed_volume_col),
         "total_flow_zero_rate": _flow_zero_rate(raw, cols, flow_source),
         "null_rate_by_relevant_column": _null_rates(raw, cols),
+        "detected_column_mapping": detected_column_mapping_report(cols),
         "warnings": [],
         "readiness_verdict": NOT_READY,
     }

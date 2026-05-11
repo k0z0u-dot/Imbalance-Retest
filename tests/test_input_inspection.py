@@ -37,7 +37,7 @@ def test_signed_only_is_proxy_warning(tmp_path) -> None:
 def test_no_flow_is_not_ready(tmp_path) -> None:
     path = tmp_path / "n.csv"
     pd.DataFrame({"timestamp": pd.date_range("2026-01-01", periods=3, freq="min"), "close": [1, 2, 3]}).to_csv(path, index=False)
-    d = inspect_input_csv(path)
+    d = inspect_input_csv(path, ColumnMapping(taker_buy_col=None, taker_sell_col=None, high_col=None, low_col=None))
     assert d["readiness_verdict"] == NOT_READY
 
 
@@ -88,12 +88,24 @@ def test_cli_writes_json_and_md(tmp_path) -> None:
             str(input_path),
             "--output",
             str(out),
-            "--taker-buy-col",
-            "taker_buy_volume",
-            "--taker-sell-col",
-            "taker_sell_volume",
         ],
         check=True,
     )
     assert (out / "input_diagnostics.json").exists()
     assert (out / "input_diagnostics.md").exists()
+
+
+def test_auto_detect_taker_columns_without_cli_mapping(tmp_path) -> None:
+    path = tmp_path / "auto.csv"
+    pd.DataFrame(
+        {
+            "timestamp": pd.date_range("2026-01-01", periods=4, freq="min"),
+            "close": [1, 2, 3, 4],
+            "taker_buy_volume": [1, 1, 2, 2],
+            "taker_sell_volume": [1, 1, 1, 1],
+        }
+    ).to_csv(path, index=False)
+    d = inspect_input_csv(path, ColumnMapping(high_col=None, low_col=None))
+    assert d["detected_flow_source"] == "taker_buy_sell"
+    assert d["readiness_verdict"] == USABLE_WITH_WARNINGS
+    assert d["detected_column_mapping"]["taker_buy_col"] == "taker_buy_volume"
