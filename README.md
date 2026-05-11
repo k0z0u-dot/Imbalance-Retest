@@ -119,8 +119,9 @@ recommended validation order.
 
 ## CI
 
-GitHub Actions runs the handoff check, full pytest suite, and a small batch
-runner smoke test on pushes to `main` and pull requests.
+GitHub Actions runs separate jobs for the handoff check, full pytest suite, and a small batch
+runner smoke test on pushes to `main` and pull requests. The full pytest job prints
+`--durations=20` output so slow tests are easy to review in CI logs.
 
 ## Agent Policy
 

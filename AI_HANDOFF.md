@@ -6,48 +6,81 @@ Last updated: 2026-05-11
 
 Purpose of this pass:
 
-- Fix pytest import stability so `scripts` can be imported from repo root in Codex Cloud, GitHub Actions, and local runs.
-- Keep all research logic, OFI calculations, zone generation, retest evaluation, baselines, report outputs, and CI intent unchanged.
+- Improve CI/test observability for review in GitHub Actions, Codex Cloud, and local runs.
+- Keep OFI feature construction, zone generation, retest logic, baselines, reporting semantics, quality-gate interpretation, and output schemas unchanged.
 
 Changed files:
 
-- `pyproject.toml`
+- `.github/workflows/ci.yml`
+- `README.md`
 - `AI_HANDOFF.md`
 
 Implementation summary:
 
-- Confirmed `[tool.pytest.ini_options]` existed in `pyproject.toml`.
-- Changed pytest `pythonpath` from `["src"]` to `["src", "."]` so tests can import the repo-root `scripts` package reliably.
-- No changes were made to research/business logic modules, outputs, or workflow semantics.
+- Split GitHub Actions checks into three explicit jobs so logs are easier to review by purpose:
+  - quick handoff check
+  - full pytest
+  - batch runner smoke
+- Updated CI full pytest command to `python -m pytest --durations=20` to expose slow-test timing summary directly in Actions logs.
+- Left `pyproject.toml` pytest addopts unchanged (`-q`) to avoid changing local default behavior unexpectedly.
+- Added a short README CI note that full pytest includes `--durations=20` in CI.
 
 Commands run:
 
 - `pytest -q`
 - `python -m pytest -m "not integration"`
 - `python -m scripts.check_handoff`
-- `python -m pytest`
+- `python -m pytest --durations=20`
 
 Test results:
 
 ```text
 pytest -q
 ................................................                         [100%]
+48 passed in 70.38s (0:01:10)
 
 python -m pytest -m "not integration"
-36 passed, 12 deselected in 56.59s
+....................................                                     [100%]
+36 passed, 12 deselected in 52.13s
 
 python -m scripts.check_handoff
-36 passed, 12 deselected in 56.29s
+handoff check: required files OK (AI_HANDOFF.md, README.md, pyproject.toml)
+handoff check: running quick tests
+command: /usr/local/bin/python -m pytest -m not integration
+....................................                                     [100%]
+36 passed, 12 deselected in 55.17s
 handoff check: PASS
 
-python -m pytest
-48 passed in 73.86s (0:01:13)
+python -m pytest --durations=20
+................................................                         [100%]
+============================= slowest 20 durations ==============================
+8.53s call     tests/test_reports.py::test_experiment_report_passes_quality_gate_on_large_synthetic
+8.17s call     tests/test_ofi_zone_study.py::test_cli_runs_with_taker_buy_sell_and_writes_outputs
+7.90s call     tests/test_ofi_zone_study.py::test_cli_runs_with_side_size_columns
+7.65s call     tests/test_ofi_zone_sweep.py::test_sweep_runs_and_writes_summary
+7.34s call     tests/test_reports.py::test_experiment_report_marks_fail_when_gate_not_met
+7.31s call     tests/test_reports.py::test_sweep_report_outputs_files
+7.22s call     tests/test_batch.py::test_batch_runs_configs_and_writes_summary
+0.05s call     tests/test_utils.py::test_floor_to_tick_handles_basic_values
+0.05s setup    tests/test_batch.py::test_discover_config_paths_explicit_and_sorted_dir
+0.05s call     tests/test_quality_gate.py::test_quality_gate_fails_when_no_confirmed_retests
+(remaining durations omitted)
+48 passed in 74.61s (0:01:14)
 ```
+
+CI/runtime concerns:
+
+- Full-suite runtime variance remains expected across environments; `--durations=20` now makes the slowest test contributors explicit in CI logs for easier comparison.
 
 Known unresolved points:
 
-- None identified for this scoped fix.
-- Full test runtime variability may still occur by environment, but all required commands passed in this run.
+- No functional blockers in this scope.
+- Runtime variance itself is not eliminated, only made more observable.
+
+Codex Cloud UI PR workflow:
+
+- Prepared this change set for Codex Cloud UI PR creation/update workflow.
+- No manual `git push` was performed from the shell.
 
 ## Current Goal
 
