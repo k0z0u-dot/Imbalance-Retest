@@ -6,6 +6,44 @@ Last updated: 2026-05-11
 
 Purpose of this pass:
 
+- Finish input inspection reporting/docs for auto-detected canonical flow columns from PR #10.
+- Keep OFI feature construction, zone/retest semantics, baselines, quality gate, and existing output schemas unchanged.
+
+Changed files:
+
+- `src/ofi_memory_zones/input_inspection.py`
+- `tests/test_input_inspection.py`
+- `README.md`
+- `docs/OFI_EXPERIMENT_PROTOCOL.md`
+- `docs/OFI_MEMORY_ZONE.md`
+- `AI_HANDOFF.md`
+
+Implementation summary:
+
+- Extended `input_diagnostics.md` flow section to include `detected_column_mapping` details alongside `detected_flow_source` and `proxy_used`.
+- Added test coverage to ensure markdown diagnostics include detected mapping entries for canonical taker columns.
+- Updated README and docs to clearly state that canonical standard flow names (e.g. `taker_buy_volume` / `taker_sell_volume`) are auto-detected without explicit `--taker-buy-col` / `--taker-sell-col` flags.
+- Clarified diagnostics content now includes detected mapping visibility in markdown report.
+
+Commands run:
+
+- `python -m scripts.check_handoff`
+- `python -m pytest`
+
+Known unresolved points:
+
+- None in this scope.
+
+Codex Cloud UI PR workflow:
+
+- This change set is prepared for Codex Cloud UI PR creation/update workflow.
+- No manual `git push` was performed from shell.
+
+
+## Latest Update
+
+Purpose of this pass:
+
 - Improve CLI UX by auto-detecting canonical OFI flow columns when explicit CLI mappings are not provided.
 - Preserve OFI feature semantics, zone/retest logic, baselines, quality gate, and output schemas.
 

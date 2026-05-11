@@ -113,6 +113,14 @@ def _build_markdown(d: dict[str, object], input_path: str) -> str:
 ## Flow Source Detection
 - detected_flow_source: {d['detected_flow_source']}
 - proxy_used: {d['proxy_used']}
+- detected_column_mapping:
+  - taker_buy_col: {d['detected_column_mapping'].get('taker_buy_col')}
+  - taker_sell_col: {d['detected_column_mapping'].get('taker_sell_col')}
+  - buy_volume_col: {d['detected_column_mapping'].get('buy_volume_col')}
+  - sell_volume_col: {d['detected_column_mapping'].get('sell_volume_col')}
+  - side_col: {d['detected_column_mapping'].get('side_col')}
+  - size_col: {d['detected_column_mapping'].get('size_col')}
+  - signed_volume_col: {d['detected_column_mapping'].get('signed_volume_col')}
 
 ## Coverage / Null Rates
 - taker_buy_volume_coverage: {d['taker_buy_volume_coverage']}

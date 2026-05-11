@@ -59,10 +59,14 @@ python -m scripts.run_ofi_zone_sweep \
 Before running a real-data OFI study, inspect input readiness first:
 
 ```bash
-python -m scripts.inspect_ofi_input   --input data/real_asset.csv   --output output/input_inspection   --taker-buy-col taker_buy_volume   --taker-sell-col taker_sell_volume
+python -m scripts.inspect_ofi_input \
+  --input data/real_asset.csv \
+  --output output/input_inspection
 ```
 
-This writes `input_diagnostics.json` and `input_diagnostics.md` with timestamp quality, flow-source detection, coverage/null rates, warnings, and a readiness verdict (`READY`, `USABLE_WITH_WARNINGS`, `NOT_READY`).
+If your CSV uses canonical flow column names (for example `taker_buy_volume` / `taker_sell_volume`), inspection auto-detects them even without `--taker-buy-col` / `--taker-sell-col`.
+
+This writes `input_diagnostics.json` and `input_diagnostics.md` with timestamp quality, flow-source detection, detected column mapping, coverage/null rates, warnings, and a readiness verdict (`READY`, `USABLE_WITH_WARNINGS`, `NOT_READY`).
 
 ## v0.3 Validation
 
