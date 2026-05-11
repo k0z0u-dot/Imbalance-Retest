@@ -1,128 +1,53 @@
 # AI Handoff
 
-Last updated: 2026-05-09
+Last updated: 2026-05-11
 
 ## Latest Update
 
 Purpose of this pass:
 
-- Document the current ChatGPT-Codex semi-automated development loop.
-- Add `docs/AGENT_WORKFLOW.md` describing roles, the Issue-to-Codex-to-push-to-review loop,
-  Codex preflight/completion checklists, ChatGPT review checks, known GitHub tool
-  limitations, and safety rules linking to `AGENT_POLICY.md`.
-- Update `README.md` with a short workflow-doc link.
-- Keep this as documentation only. No research logic, output schema, CI,
-  automation, EA logic, live trading, order execution, position sizing,
-  broker/exchange integration, portfolio logic, or risk-management behavior was
-  changed.
+- Fix pytest import stability so `scripts` can be imported from repo root in Codex Cloud, GitHub Actions, and local runs.
+- Keep all research logic, OFI calculations, zone generation, retest evaluation, baselines, report outputs, and CI intent unchanged.
 
 Changed files:
 
-- `docs/AGENT_WORKFLOW.md`
-- `README.md`
+- `pyproject.toml`
 - `AI_HANDOFF.md`
 
 Implementation summary:
 
-- Added `docs/AGENT_WORKFLOW.md`.
-- Documented roles:
-  - ChatGPT
-  - Codex
-  - GitHub
-  - GitHub Actions
-- Documented the standard loop:
-  - Issue definition
-  - Codex implementation
-  - required local checks
-  - `AI_HANDOFF.md` update
-  - commit/push to `main`
-  - ChatGPT review
-- Added Codex preflight checklist.
-- Added Codex completion checklist.
-- Added ChatGPT review checklist.
-- Documented known GitHub tool limitations:
-  - Issue creation generally works.
-  - Repository, file, and commit reads work.
-  - Issue comments are unreliable.
-  - Issue close or update actions may be intermittent.
-  - If close/comment fails, completion is tracked by latest commit SHA plus
-    `AI_HANDOFF.md`.
-- Added safety rules and linked to `AGENT_POLICY.md`.
-- README now links to `docs/AGENT_WORKFLOW.md` from the Agent Policy section.
+- Confirmed `[tool.pytest.ini_options]` existed in `pyproject.toml`.
+- Changed pytest `pythonpath` from `["src"]` to `["src", "."]` so tests can import the repo-root `scripts` package reliably.
+- No changes were made to research/business logic modules, outputs, or workflow semantics.
 
 Commands run:
 
-- `git status --short`
-  - Initial result: no output; worktree was clean.
-- `Get-Content -Raw AGENT_POLICY.md`
-  - Reviewed repository policy before editing.
-- `Get-Content -Raw AI_HANDOFF.md`
-  - Reviewed previous handoff state.
-- `Get-Content -Raw README.md`
-  - Reviewed existing README sections.
-- `Get-ChildItem docs -File | Select-Object Name,Length`
-  - Confirmed existing docs before adding `AGENT_WORKFLOW.md`.
+- `pytest -q`
+- `python -m pytest -m "not integration"`
 - `python -m scripts.check_handoff`
-  - Result: quick tests passed, handoff check PASS.
 - `python -m pytest`
-  - First run result: timed out after 304 seconds.
-- `Get-Process python -ErrorAction SilentlyContinue`
-  - Result after timeout: no Python process output; no leftover pytest process.
-- `git status --short`
-  - Confirmed only `README.md` and `docs/AGENT_WORKFLOW.md` were changed before
-    updating this handoff file.
-- `python -m pytest`
-  - Re-run with longer timeout: `48 passed in 367.10s (0:06:07)`.
-- `python -m scripts.check_handoff`
-  - Result after updating `AI_HANDOFF.md`: quick tests passed, handoff check
-    PASS.
-- `python -m pytest`
-  - Result after updating `AI_HANDOFF.md`: `48 passed in 431.90s (0:07:11)`.
 
 Test results:
 
 ```text
+pytest -q
+................................................                         [100%]
+
+python -m pytest -m "not integration"
+36 passed, 12 deselected in 56.59s
+
 python -m scripts.check_handoff
-36 passed, 12 deselected in 13.01s
+36 passed, 12 deselected in 56.29s
 handoff check: PASS
 
 python -m pytest
-timed out after 304 seconds
-
-python -m pytest
-48 passed in 367.10s (0:06:07)
-
-python -m scripts.check_handoff
-36 passed, 12 deselected in 59.33s
-handoff check: PASS
-
-python -m pytest
-48 passed in 431.90s (0:07:11)
+48 passed in 73.86s (0:01:13)
 ```
 
-Current error / concern:
+Known unresolved points:
 
-- Full pytest passed but took much longer than recent runs. The first run hit a
-  304-second timeout; subsequent runs passed in about 6-7 minutes.
-- This pass intentionally does not add tests because the requested change is
-  documentation-only and existing checks passed.
-- No CI, automation, research logic, schema, or trading behavior was changed.
-
-Decisions made:
-
-- Kept README update minimal.
-- Put detailed workflow content in `docs/AGENT_WORKFLOW.md`, not README.
-- Used ASCII `ChatGPT-Codex` / `Issue-to-Codex-to-push-to-review` wording in
-  docs to keep file encoding simple.
-- Did not add GitHub automation or Codex auto-start behavior.
-
-What I want ChatGPT to do next:
-
-1. Review whether `docs/AGENT_WORKFLOW.md` accurately reflects the intended
-   handoff and review process.
-2. Decide whether a future issue should add lightweight tests for workflow docs.
-3. If full pytest remains slow, decide whether to split slower integration
-   checks further.
+- None identified for this scoped fix.
+- Full test runtime variability may still occur by environment, but all required commands passed in this run.
 
 ## Current Goal
 
