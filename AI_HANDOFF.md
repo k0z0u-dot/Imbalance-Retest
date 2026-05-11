@@ -195,3 +195,19 @@ Repository layout:
 - `docs/AGENT_WORKFLOW.md`: ChatGPT-Codex development loop
 - `README.md`: quick start and common CLI examples
 - `data/ofi_synthetic.csv`: sample synthetic CSV
+
+## Codex Cloud UI PR smoke test
+
+- Selected environment name: `Imbalance-Retest`
+- Attached repository: `k0z0u-dot/Imbalance-Retest`
+- Whether origin is visible: `No` (no entries from `git remote -v`)
+- Commands run:
+  - `pwd`
+  - `git status --short --branch`
+  - `git remote -v`
+  - `git log --oneline -5`
+  - `pytest -q`
+- Check result:
+  - Environment and repository context confirmed.
+  - Git checks completed.
+  - `pytest -q` failed during test collection with `ModuleNotFoundError: No module named 'scripts'` in `tests/test_check_handoff.py`.
