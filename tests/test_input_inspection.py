@@ -5,7 +5,7 @@ import sys
 
 import pandas as pd
 
-from ofi_memory_zones.input_inspection import READY, NOT_READY, USABLE_WITH_WARNINGS, inspect_input_csv
+from ofi_memory_zones.input_inspection import READY, NOT_READY, USABLE_WITH_WARNINGS, inspect_input_csv, write_input_diagnostics_reports
 from ofi_memory_zones.schema import ColumnMapping
 
 
@@ -109,3 +109,23 @@ def test_auto_detect_taker_columns_without_cli_mapping(tmp_path) -> None:
     assert d["detected_flow_source"] == "taker_buy_sell"
     assert d["readiness_verdict"] == USABLE_WITH_WARNINGS
     assert d["detected_column_mapping"]["taker_buy_col"] == "taker_buy_volume"
+
+
+def test_markdown_report_includes_detected_mapping(tmp_path) -> None:
+    input_path = tmp_path / "m.csv"
+    out = tmp_path / "out"
+    pd.DataFrame(
+        {
+            "timestamp": pd.date_range("2026-01-01", periods=2, freq="min"),
+            "close": [1, 2],
+            "taker_buy_volume": [1, 1],
+            "taker_sell_volume": [1, 1],
+        }
+    ).to_csv(input_path, index=False)
+    d = inspect_input_csv(input_path, ColumnMapping(high_col=None, low_col=None))
+    write_path = out
+    write_input_diagnostics_reports(d, str(input_path), write_path)
+    md = (write_path / "input_diagnostics.md").read_text(encoding="utf-8")
+    assert "- detected_column_mapping:" in md
+    assert "- taker_buy_col: taker_buy_volume" in md
+    assert "- taker_sell_col: taker_sell_volume" in md

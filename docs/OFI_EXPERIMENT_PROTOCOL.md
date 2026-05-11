@@ -34,8 +34,12 @@ sample-size or gate condition rather than a crash.
 Before any real-data study run, inspect CSV readiness:
 
 ```bash
-python -m scripts.inspect_ofi_input   --input data/real_asset.csv   --output output/real_input_inspection
+python -m scripts.inspect_ofi_input \
+  --input data/real_asset.csv \
+  --output output/real_input_inspection
 ```
+
+If your CSV has canonical flow names (such as `taker_buy_volume` / `taker_sell_volume`), they are auto-detected without explicit flow flags.
 
 Read `input_diagnostics.md` first. If verdict is `NOT_READY`, fix required columns/quality issues before `run_ofi_zone_study`.
 
