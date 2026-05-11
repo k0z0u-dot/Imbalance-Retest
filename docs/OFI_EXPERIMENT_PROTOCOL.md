@@ -29,6 +29,16 @@ Inspect `experiment_report.md`, `data_diagnostics.json`, and
 `baseline_summary.csv`. A synthetic `FAIL` can be acceptable if it reflects a
 sample-size or gate condition rather than a crash.
 
+## 2. Real-Data Input Inspection (Run First)
+
+Before any real-data study run, inspect CSV readiness:
+
+```bash
+python -m scripts.inspect_ofi_input   --input data/real_asset.csv   --output output/real_input_inspection
+```
+
+Read `input_diagnostics.md` first. If verdict is `NOT_READY`, fix required columns/quality issues before `run_ofi_zone_study`.
+
 ## 2. Single-Asset Smoke Test
 
 Run a loose config on one real-data CSV to confirm the schema, flow source, and
