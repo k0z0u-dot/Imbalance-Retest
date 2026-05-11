@@ -63,6 +63,29 @@ Check `data_diagnostics.json` first. Flow proxy usage, missing high/low data,
 or very low retest counts should be treated as data-quality blockers before any
 performance interpretation.
 
+
+## 2.5 Real-Data Smoke Runner (Inspection + Study + Report)
+
+After reviewing `input_diagnostics.md`, you can run a guarded smoke pipeline:
+
+```bash
+python -m scripts.run_ofi_real_data_smoke \
+  --input data/real/BTC_1m.csv \
+  --output-root output/real_smoke/BTC_1m \
+  --config-json configs/ofi_loose.json
+```
+
+Behavior:
+
+- Runs `inspect_ofi_input` equivalent first and stores outputs under `input_inspection/`.
+- If `readiness_verdict == NOT_READY`, it stops before study/report and writes only `smoke_summary.json` and `smoke_summary.md`.
+- If verdict is `READY` or `USABLE_WITH_WARNINGS`, it runs study (`study/`) and report (`report/`) then writes smoke summary files.
+- `USABLE_WITH_WARNINGS` requires careful interpretation of proxy flow (`proxy_used=True`) and high/low availability warnings.
+
+This smoke run is **not** a strategy backtest or order simulation. It is a pipeline safety/diagnostics check.
+
+Do not commit raw CSV (`data/real/*`) or generated output (`output/*`, `reports/*`) to Git.
+
 ## 3. Baseline Comparison
 
 Run default validation after the smoke test passes. OFI has hypothesis value
