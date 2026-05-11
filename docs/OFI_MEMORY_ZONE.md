@@ -66,6 +66,9 @@ does not infer OFI from candle shape or price movement.
 
 ## CLI Example
 
+For real-data pre-check, run `python -m scripts.inspect_ofi_input` first (see README and `docs/OFI_EXPERIMENT_PROTOCOL.md`).
+
+
 ```bash
 python -m scripts.run_ofi_zone_study \
   --input data/sample.csv \

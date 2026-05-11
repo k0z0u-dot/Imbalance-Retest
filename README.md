@@ -54,6 +54,16 @@ python -m scripts.run_ofi_zone_sweep \
   --grid-json configs/ofi_sweep_grid.json
 ```
 
+## Input Inspection (Real CSV Pre-check)
+
+Before running a real-data OFI study, inspect input readiness first:
+
+```bash
+python -m scripts.inspect_ofi_input   --input data/real_asset.csv   --output output/input_inspection   --taker-buy-col taker_buy_volume   --taker-sell-col taker_sell_volume
+```
+
+This writes `input_diagnostics.json` and `input_diagnostics.md` with timestamp quality, flow-source detection, coverage/null rates, warnings, and a readiness verdict (`READY`, `USABLE_WITH_WARNINGS`, `NOT_READY`).
+
 ## v0.3 Validation
 
 Use config JSON to enable multiple baseline trials and OOS checks:

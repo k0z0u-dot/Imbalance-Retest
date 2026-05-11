@@ -6,6 +6,58 @@ Last updated: 2026-05-11
 
 Purpose of this pass:
 
+- Add a pre-study input CSV inspection CLI so real BTC/ETH/SOL-like datasets can be diagnosed before OFI zone study execution.
+- Preserve existing OFI feature construction, zone/retest semantics, baselines, reporting, and existing output schemas.
+
+Changed files:
+
+- `src/ofi_memory_zones/input_inspection.py`
+- `scripts/inspect_ofi_input.py`
+- `tests/test_input_inspection.py`
+- `README.md`
+- `docs/OFI_EXPERIMENT_PROTOCOL.md`
+- `docs/OFI_MEMORY_ZONE.md`
+- `AI_HANDOFF.md`
+
+Implementation summary:
+
+- Added `inspect_input_csv()` diagnostics with rows/columns, timestamp quality, duplicate detection, inferred bar interval, duration, OHLC availability, flow source detection priority, proxy flags, coverage/null rates, zero-flow rate, warnings, and readiness verdict (`READY`/`USABLE_WITH_WARNINGS`/`NOT_READY`).
+- Added flow source priority aligned with existing study behavior:
+  1) taker_buy+taker_sell
+  2) buy_volume+sell_volume proxy
+  3) side+size proxy
+  4) signed_volume proxy
+  5) none (NOT_READY)
+- Added `write_input_diagnostics_reports()` to output `input_diagnostics.json` and `input_diagnostics.md` with recommended next command.
+- Added `python -m scripts.inspect_ofi_input` CLI with explicit column-mapping flags.
+- Added tests for readiness/proxy/not-ready behavior, timestamp/high-low warnings, and CLI artifact creation.
+- Updated README and protocol docs to run inspection before real-data OFI study.
+
+Commands run:
+
+- `pytest -q`
+- `python -m pytest -m "not integration"`
+- `python -m scripts.check_handoff`
+- `python -m pytest --durations=20`
+
+Test results:
+
+- See command output in this handoff update.
+
+Known unresolved points:
+
+- None in this scope.
+
+Codex Cloud UI PR workflow:
+
+- This change set is prepared for Codex Cloud UI PR creation/update workflow.
+- No manual `git push` was performed from shell.
+
+
+## Latest Update
+
+Purpose of this pass:
+
 - Improve CI/test observability for review in GitHub Actions, Codex Cloud, and local runs.
 - Keep OFI feature construction, zone generation, retest logic, baselines, reporting semantics, quality-gate interpretation, and output schemas unchanged.
 
