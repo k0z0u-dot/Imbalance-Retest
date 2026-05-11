@@ -6,6 +6,45 @@ Last updated: 2026-05-11
 
 Purpose of this pass:
 
+- Improve CLI UX by auto-detecting canonical OFI flow columns when explicit CLI mappings are not provided.
+- Preserve OFI feature semantics, zone/retest logic, baselines, quality gate, and output schemas.
+
+Changed files:
+
+- `src/ofi_memory_zones/column_detection.py`
+- `src/ofi_memory_zones/input_inspection.py`
+- `tests/test_column_detection.py`
+- `tests/test_input_inspection.py`
+- `AI_HANDOFF.md`
+
+Implementation summary:
+
+- Added canonical flow column detection utility (`infer_column_mapping_from_columns`) with priority-safe candidate lists for taker buy/sell, buy/sell proxy, side/size, and signed volume.
+- Explicit mappings continue to take precedence; auto-detection only fills `None` fields.
+- Integrated auto-detection into `inspect_input_csv()` so `scripts.inspect_ofi_input` can detect standard flow columns without extra CLI flags.
+- Added diagnostics output field `detected_column_mapping` for transparency of inferred mappings.
+- Added tests for detection behavior and explicit-over-auto precedence, and updated CLI inspection test to run without explicit flow flags.
+
+Commands run:
+
+- `python -m scripts.check_handoff`
+- `python -m pytest`
+
+Known unresolved points:
+
+- None in this scope.
+
+Codex Cloud UI PR workflow:
+
+- This change set is prepared for Codex Cloud UI PR creation/update workflow.
+- No manual `git push` was performed from shell.
+
+
+
+## Latest Update
+
+Purpose of this pass:
+
 - Add a pre-study input CSV inspection CLI so real BTC/ETH/SOL-like datasets can be diagnosed before OFI zone study execution.
 - Preserve existing OFI feature construction, zone/retest semantics, baselines, reporting, and existing output schemas.
 
